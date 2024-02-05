@@ -1,19 +1,5 @@
-import { range, rMap } from "./utils.js";
-import { Board, Group } from "./board.js";
-
-const gameBoard = new Board([
-    [9, 0, 0,   5, 0, 0,   0, 6, 2],
-    [0, 0, 0,   9, 3, 0,   8, 4, 0],
-    [0, 7, 0,   0, 8, 0,   0, 0, 0],
-
-    [0, 0, 0,   6, 0, 0,   2, 0, 0],
-    [8, 0, 2,   0, 5, 0,   0, 0, 0],
-    [0, 5, 7,   0, 0, 0,   0, 3, 8],
-
-    [0, 3, 0,   0, 6, 4,   0, 0, 0],
-    [7, 6, 9,   0, 1, 2,   5, 8, 0],
-    [4, 0, 8,   0, 9, 5,   3, 1, 6],
-]);
+import { rMap } from "./utils.js";
+import Group from "./group.js";
 
 function parseGroups(board) {
     return [
@@ -30,7 +16,7 @@ function solve(board) {
 
     while (!board.isComplete()) {
         iterations++;
-        if (iterations > 10_000) {
+        if (iterations > 1_000) {
             console.warn("Too many iterations, breaking the loop.");
             break;
         }
@@ -42,14 +28,16 @@ function solve(board) {
         });
 
         groups.forEach(group => {
-            range(1, 10).forEach(num => {
-                const points = group.getAvailablePoints(num);
+            group.getValuesLeft().forEach(value => {
+                const availablePoints = group.getAvailablePoints(value);
 
                 groups.forEach(otherGroup => {
-                    const otherPoints = otherGroup.points.filter(point => !points.includes(point));
+                    if (otherGroup === group) return;
 
-                    if (otherPoints.length + points.length === 9) {
-                        otherPoints.forEach(point => point.addWrongValues([num]));
+                    const otherPoints = otherGroup.points.filter(point => !availablePoints.includes(point));
+
+                    if (otherPoints.length + availablePoints.length === 9) {
+                        otherPoints.forEach(point => point.addWrongValues([value]));
                     }
                 });
             });
@@ -57,7 +45,7 @@ function solve(board) {
 
         groups.forEach(group => {
             group.getValuesLeft().forEach(value => {
-                const availablePoints = group.getAvailablePoints();
+                const availablePoints = group.getAvailablePoints(value);
 
                 if (availablePoints.length === 1) {
                     availablePoints[0].value = value;
@@ -73,8 +61,4 @@ function solve(board) {
     }
 }
 
-gameBoard.log();
-
-solve(gameBoard);
-
-gameBoard.log();
+export { solve };
