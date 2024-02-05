@@ -42,17 +42,31 @@ function solve(board) {
         });
 
         groups.forEach(group => {
+            range(1, 10).forEach(num => {
+                const points = group.getAvailablePoints(num);
+
+                groups.forEach(otherGroup => {
+                    const otherPoints = otherGroup.points.filter(point => !points.includes(point));
+
+                    if (otherPoints.length + points.length === 9) {
+                        otherPoints.forEach(point => point.addWrongValues([num]));
+                    }
+                });
+            });
+        });
+
+        groups.forEach(group => {
             group.getValuesLeft().forEach(value => {
                 const availablePoints = group.getAvailablePoints();
 
-                if (availablePoints.length == 1) {
+                if (availablePoints.length === 1) {
                     availablePoints[0].value = value;
                 }
             });
         });
 
         board.points.forEach(point => {
-            if (point.availableValues.length == 1) {
+            if (point.availableValues.length === 1) {
                 point.value = point.availableValues[0];
             }
         });
