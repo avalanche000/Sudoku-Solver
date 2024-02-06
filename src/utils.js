@@ -13,8 +13,10 @@ function range(a, b) {
     return arr;
 }
 
-function rMap(num, func) {
-    return range(num).map(func);
+function loop(num, func) {
+    for (let i = 0; i < num; i++) {
+        func(i);
+    }
 }
 
-export { range, rMap };
+export { range, loop };

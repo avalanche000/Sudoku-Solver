@@ -1,10 +1,10 @@
-import { rMap } from "./utils.js";
+import { range } from "./utils.js";
 import Point from "./point.js";
 
 class Board {
-    constructor(boardArray) {
-        this.board = rMap(9, y => rMap(9, x => new Point(x, y, boardArray[y][x])));
-        this.points = rMap(81, i => this.get(i % 9, Math.floor(i / 9)));
+    constructor() {
+        this.board = range(9).map(y => range(9).map(x => new Point(x, y, 0)));
+        this.points = range(81).map(i => this.get(i % 9, Math.floor(i / 9)));
     }
 
     get(x, y) {
@@ -16,8 +16,8 @@ class Board {
     }
 
     isComplete() {
-        for (let i = 0; i < 81; i++) {
-            if (this.get(i % 9, Math.floor(i / 9)).value === 0) return false;
+        for (let i = 0; i < this.points.length; i++) {
+            if (this.points[i].value === 0) return false;
         }
 
         return true;

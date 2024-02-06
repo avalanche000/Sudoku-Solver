@@ -1,11 +1,11 @@
-import { rMap } from "./utils.js";
+import { range } from "./utils.js";
 import Group from "./group.js";
 
 function parseGroups(board) {
     return [
-        ...rMap(9, y => new Group(rMap(9, x => board.get(x, y)))),
-        ...rMap(9, x => new Group(rMap(9, y => board.get(x, y)))),
-        ...rMap(9, si => new Group(rMap(9, i => board.get(i % 3 + (si % 3) * 3, Math.floor(i / 3) + Math.floor(si / 3) * 3)))),
+        ...range(9).map(y => new Group(range(9).map(x => board.get(x, y)))),
+        ...range(9).map(x => new Group(range(9).map(y => board.get(x, y)))),
+        ...range(9).map(si => new Group(range(9).map(i => board.get(i % 3 + (si % 3) * 3, Math.floor(i / 3) + Math.floor(si / 3) * 3)))),
     ];
 }
 
@@ -18,7 +18,7 @@ function solve(board) {
         iterations++;
         if (iterations > 1_000) {
             console.warn("Too many iterations, breaking the loop.");
-            break;
+            return 1;
         }
 
         groups.forEach(group => {
@@ -59,6 +59,8 @@ function solve(board) {
             }
         });
     }
+    
+    return 0;
 }
 
 export { solve };
