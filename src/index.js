@@ -112,11 +112,11 @@ query("#solve").addEventListener("click", async () => {
     attemptSolve();
 });
 
-query("step").addEventListener("click", () => {
+query("#step").addEventListener("click", () => {
     attemptSolve(1);
 });
 
-query("reset").addEventListener("click", () => {
+query("#reset").addEventListener("click", () => {
     board.points.forEach((point, idx) => {
         point.value = 0;
         point.availableValues = [1, 2, 3, 4, 5, 6, 7, 8, 9];
