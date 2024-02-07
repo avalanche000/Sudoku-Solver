@@ -29,6 +29,10 @@ html, body {
     background-color: var(--theme-color-1);
 }
 
+#step {
+    background-color: yellow;
+}
+
 #reset {
     background-color: red;
 }

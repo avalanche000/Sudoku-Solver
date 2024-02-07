@@ -9,14 +9,14 @@ function parseGroups(board) {
     ];
 }
 
-function solve(board) {
+function solve(board, steps) {
     const groups = parseGroups(board);
 
     let iterations = 0;
 
     while (!board.isComplete()) {
         iterations++;
-        if (iterations > 1_000) {
+        if (iterations > (steps ?? 1_000)) {
             console.warn("Too many iterations, breaking the loop.");
             return 1;
         }

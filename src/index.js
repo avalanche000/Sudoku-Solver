@@ -5,13 +5,44 @@ import Board from "./board.js";
 const boardDOM = document.getElementById("board");
 const solveButton = document.getElementById("solve");
 const resetButton = document.getElementById("reset");
+const stepButton = document.getElementById("reset");
 const board = new Board();
+const buttons = [];
+const keys = new Map();
 
 let selectedElement;
 let selectedPos;
 
+keys.set("Digit1", 1);
+keys.set("Digit2", 2);
+keys.set("Digit3", 3);
+keys.set("Digit4", 4);
+keys.set("Digit5", 5);
+keys.set("Digit6", 6);
+keys.set("Digit7", 7);
+keys.set("Digit8", 8);
+keys.set("Digit9", 9);
+keys.set("Backspace", 0);
+keys.set("Delete", 0);
 
-const buttons = [];
+function attemptSolve(steps) {
+    const result = solve(board, steps);
+
+    board.points.forEach((point, idx) => {
+        buttons[idx].innerHTML = point.value === 0 ? "" : point.value;
+    });
+
+    switch (result) {
+        case 0:
+            alert("Success!!!");
+            break;
+        case 1:
+            alert("Error, couldn't find a solution.");
+            break;
+        default:
+            break;
+    }
+}
 
 loop(9, y => {
     const row = document.createElement("div");
@@ -40,20 +71,6 @@ loop(9, y => {
 
     boardDOM.appendChild(row);
 });
-
-const keys = new Map();
-
-keys.set("Digit1", 1);
-keys.set("Digit2", 2);
-keys.set("Digit3", 3);
-keys.set("Digit4", 4);
-keys.set("Digit5", 5);
-keys.set("Digit6", 6);
-keys.set("Digit7", 7);
-keys.set("Digit8", 8);
-keys.set("Digit9", 9);
-keys.set("Backspace", 0);
-keys.set("Delete", 0);
 
 window.addEventListener("keydown", (event) => {
     const value = keys.get(event.code);
@@ -94,25 +111,14 @@ window.addEventListener("keydown", (event) => {
 });
 
 solveButton.addEventListener("click", async () => {
-    const result = solve(board);
-
-    board.points.forEach((point, idx) => {
-        buttons[idx].innerHTML = point.value === 0 ? "" : point.value;
-    });
-
-    switch (result) {
-        case 0:
-            alert("Success!!!");
-            break;
-        case 1:
-            alert("Error, couldn't find a solution.");
-            break;
-        default:
-            break;
-    }
+    attemptSolve();
 });
 
-resetButton.addEventListener("click", async () => {
+stepButton.addEventListener("click", () => {
+    attemptSolve(1);
+});
+
+resetButton.addEventListener("click", () => {
     board.points.forEach((point, idx) => {
         point.value = 0;
         buttons[idx].innerHTML = "";
