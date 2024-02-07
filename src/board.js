@@ -7,12 +7,26 @@ class Board {
         this.points = range(81).map(i => this.get(i % 9, Math.floor(i / 9)));
     }
 
+    resetSolve() {
+        this.points.forEach(point => {
+            point.availablePoints = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+        });
+    }
+
+    reset() {
+        this.points.forEach(point => {
+            point.value = 0;
+            point.availablePoints = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+        });
+    }
+
     get(x, y) {
         return this.board[y][x];
     }
 
     set(x, y, value) {
-        return this.board[y][x].value = value;
+        this.board[y][x].value = value;
+        this.resetSolve();
     }
 
     isComplete() {
