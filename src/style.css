@@ -19,6 +19,8 @@ body {
 .button {
     cursor: pointer;
     border-radius: 15px;
+    margin-top: 5px;
+    margin-bottom: 5px;
     padding: 10px;
     width: 150px;
     text-align: center;
@@ -33,6 +35,11 @@ body {
     margin: 0;
     display: flex;
     flex-direction: column;
+}
+
+#ui {
+    display: flex;
+    margin: 10px;
 }
 
 #solve {
