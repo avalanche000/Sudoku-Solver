@@ -2,10 +2,8 @@ import { loop } from "./utils.js";
 import { solve } from "./solver.js";
 import Board from "./board.js";
 
+const query = x => document.querySelector(x);
 const boardDOM = document.getElementById("board");
-const solveButton = document.getElementById("solve");
-const resetButton = document.getElementById("reset");
-const stepButton = document.getElementById("reset");
 const board = new Board();
 const buttons = [];
 const keys = new Map();
@@ -34,10 +32,10 @@ function attemptSolve(steps) {
 
     switch (result) {
         case 0:
-            alert("Success!!!");
+            query("#result").innerHTML = "Success!";
             break;
         case 1:
-            alert("Error, couldn't find a solution.");
+            query("#result").innerHTML = "Error, couldn't find a solution.";
             break;
         default:
             break;
@@ -110,15 +108,15 @@ window.addEventListener("keydown", (event) => {
     }
 });
 
-solveButton.addEventListener("click", async () => {
+query("#solve").addEventListener("click", async () => {
     attemptSolve();
 });
 
-stepButton.addEventListener("click", () => {
+query("step").addEventListener("click", () => {
     attemptSolve(1);
 });
 
-resetButton.addEventListener("click", () => {
+query("reset").addEventListener("click", () => {
     board.points.forEach((point, idx) => {
         point.value = 0;
         buttons[idx].innerHTML = "";
