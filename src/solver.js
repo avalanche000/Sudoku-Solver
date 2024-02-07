@@ -45,7 +45,7 @@ function solve(board, steps) {
 
         groups.forEach(group => {
             const valuesLeft = group.getValuesLeft();
-            
+
             valuesLeft.forEach(value1 => {
                 const points = group.getAvailablePoints(value1);
 
@@ -66,7 +66,7 @@ function solve(board, steps) {
                     matches++;
                     values.push(value2);
                 });
-                
+
                 if (matches >= points.length) {
                     points.forEach(point => {
                         point.addWrongValues(invertValues(values));

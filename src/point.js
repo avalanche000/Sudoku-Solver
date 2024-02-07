@@ -9,7 +9,7 @@ class Point {
     }
 
     getUnavailableValues() {
-        return invertValues(thid,this.availableValues);
+        return invertValues(thid, this.availableValues);
     }
 
     addWrongValues(array) {
