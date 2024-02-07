@@ -35,7 +35,9 @@ function attemptSolve(steps) {
             query("#result").innerHTML = "Success!";
             break;
         case 1:
-            query("#result").innerHTML = "Error, couldn't find a solution.";
+            query("#result").innerHTML = "Error: Couldn't find a solution.";
+            break;
+        case 2: // used step function
             break;
         default:
             break;
@@ -79,24 +81,32 @@ window.addEventListener("keydown", (event) => {
     } else {
         switch (event.code) {
             case "ArrowUp":
+                event.preventDefault();
+
                 if (selectedPos[1] > 0) {
                     selectedPos[1] = selectedPos[1] - 1;
                     buttons[selectedPos[0] + selectedPos[1] * 9].click();
                 }
                 break;
             case "ArrowDown":
+                event.preventDefault();
+
                 if (selectedPos[1] < 8) {
                     selectedPos[1] = selectedPos[1] + 1;
                     buttons[selectedPos[0] + selectedPos[1] * 9].click();
                 }
                 break;
             case "ArrowLeft":
+                event.preventDefault();
+
                 if (selectedPos[0] > 0) {
                     selectedPos[0] = selectedPos[0] - 1;
                     buttons[selectedPos[0] + selectedPos[1] * 9].click();
                 }
                 break;
             case "ArrowRight":
+                event.preventDefault();
+
                 if (selectedPos[0] < 8) {
                     selectedPos[0] = selectedPos[0] + 1;
                     buttons[selectedPos[0] + selectedPos[1] * 9].click();
@@ -108,12 +118,22 @@ window.addEventListener("keydown", (event) => {
     }
 });
 
-query("#solve").addEventListener("click", async () => {
-    attemptSolve();
+query("#solve").addEventListener("click", () => {
+    query("#solve").innerHTML = ". . . . .";
+    query("#result").innerHTML = "";
+
+    setTimeout(() => {
+        attemptSolve();
+        query("#solve").innerHTML = "Solve";
+    }, 1);
 });
 
 query("#step").addEventListener("click", () => {
-    attemptSolve(1);
+    query("#result").innerHTML = "";
+
+    setTimeout(() => {
+        attemptSolve(1);
+    }, 1);
 });
 
 query("#reset").addEventListener("click", () => {

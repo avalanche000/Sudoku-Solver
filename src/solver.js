@@ -16,9 +16,12 @@ function solve(board, steps) {
 
     while (!board.isComplete()) {
         iterations++;
-        if (iterations > (steps ?? 1_000)) {
+        if (iterations > 1_000) {
             console.warn("Too many iterations, breaking the loop.");
             return 1;
+        }
+        if (iterations > steps) {
+            return 2;
         }
 
         groups.forEach(group => {
