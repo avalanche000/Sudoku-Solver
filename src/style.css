@@ -26,6 +26,10 @@ body {
     color: white;
 }
 
+#ui {
+    float: left;
+}
+
 #solve {
     background-color: var(--theme-color-1);
 }
@@ -38,8 +42,13 @@ body {
     background-color: red;
 }
 
+#result {
+    border: 5px solid gray;
+}
+
 #board {
     display: flex;
+    float: left;
     flex-direction: column;
     border: var(--board-outer-size) solid black;
     width: 500px;
