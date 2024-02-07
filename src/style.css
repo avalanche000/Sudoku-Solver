@@ -26,8 +26,13 @@ body {
     color: white;
 }
 
-#ui {
-    float: left;
+.container {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
 }
 
 #solve {
@@ -48,7 +53,6 @@ body {
 
 #board {
     display: flex;
-    float: left;
     flex-direction: column;
     border: var(--board-outer-size) solid black;
     width: 500px;
