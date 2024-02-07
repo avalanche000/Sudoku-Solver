@@ -139,6 +139,7 @@ query("#step").addEventListener("click", () => {
 query("#reset").addEventListener("click", () => {
     board.points.forEach((point, idx) => {
         query("#result").innerHTML = "";
+
         point.value = 0;
         point.availableValues = [1, 2, 3, 4, 5, 6, 7, 8, 9];
         buttons[idx].innerHTML = "";
