@@ -19,4 +19,8 @@ function loop(num, func) {
     }
 }
 
-export { range, loop };
+function invertPoints(points) {
+    return [1, 2, 3, 4, 5, 6, 7, 8, 9].filter(value => !points.includes(value));
+}
+
+export { range, loop, invertPoints as invertValues };

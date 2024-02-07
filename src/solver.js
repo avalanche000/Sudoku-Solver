@@ -1,4 +1,4 @@
-import { range } from "./utils.js";
+import { range, invertValues } from "./utils.js";
 import Group from "./group.js";
 
 function parseGroups(board) {
@@ -44,6 +44,38 @@ function solve(board) {
         });
 
         groups.forEach(group => {
+            const valuesLeft = group.getValuesLeft();
+            
+            valuesLeft.forEach(value1 => {
+                const points = group.getAvailablePoints(value1);
+
+                let matches = 1;
+                let values = [value1];
+
+                valuesLeft.forEach(value2 => {
+                    if (value1 === value2) return;
+
+                    const points2 = group.getAvailablePoints(value2);
+
+                    if (points.length !== points2.length) return;
+
+                    for (let i = 0; i < points.length; i++) {
+                        if (!points2.includes(points[i])) return;
+                    }
+
+                    matches++;
+                    values.push(value2);
+                });
+                
+                if (matches >= points.length) {
+                    points.forEach(point => {
+                        point.addWrongValues(invertValues(values));
+                    });
+                }
+            });
+        });
+
+        groups.forEach(group => {
             group.getValuesLeft().forEach(value => {
                 const availablePoints = group.getAvailablePoints(value);
 
@@ -59,7 +91,7 @@ function solve(board) {
             }
         });
     }
-    
+
     return 0;
 }
 

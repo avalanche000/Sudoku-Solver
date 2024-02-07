@@ -1,4 +1,4 @@
-import { range } from "./utils.js";
+import { range, invertValues } from "./utils.js";
 
 class Point {
     constructor(x, y, value) {
@@ -6,6 +6,10 @@ class Point {
         this.y = y;
         this.value = value;
         this.availableValues = range(1, 10);
+    }
+
+    getUnavailableValues() {
+        return invertValues(thid,this.availableValues);
     }
 
     addWrongValues(array) {
