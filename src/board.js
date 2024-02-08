@@ -24,9 +24,9 @@ class Board {
         return this.board[y][x];
     }
 
-    set(x, y, value) {
+    set(x, y, value, reset = false) {
         this.board[y][x].value = value;
-        this.resetSolve();
+        if (reset) this.resetSolve();
     }
 
     isComplete() {
