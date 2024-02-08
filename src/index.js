@@ -77,7 +77,7 @@ window.addEventListener("keydown", (event) => {
 
     if (value != null) {
         selectedElement.innerHTML = value === 0 ? "" : value;
-        board.set(...selectedPos, value);
+        board.set(...selectedPos, value, true);
     } else {
         switch (event.code) {
             case "ArrowUp":
