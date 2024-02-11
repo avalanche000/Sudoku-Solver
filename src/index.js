@@ -39,6 +39,9 @@ function attemptSolve(steps) {
             break;
         case 2: // used step function
             break;
+        case 3:
+            query("#result").innerHTML = "Error: Too many iterations.";
+            break;
         default:
             break;
     }

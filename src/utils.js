@@ -19,8 +19,19 @@ function loop(num, func) {
     }
 }
 
-function invertPoints(points) {
+function invertValues(points) {
     return [1, 2, 3, 4, 5, 6, 7, 8, 9].filter(value => !points.includes(value));
 }
 
-export { range, loop, invertPoints as invertValues };
+function createPosWrapper(width) {
+    return {
+        x: i => i % width,
+        y: i => Math.floor(i / width),
+        pos: i => [i % width, Math.floor(i / width)],
+        i: (x, y) => x + y * width
+    };
+}
+
+const pos9 = createPosWrapper(9);
+
+export { range, loop, invertValues, createPosWrapper, pos9 };

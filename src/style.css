@@ -20,12 +20,23 @@ body {
 .button {
     cursor: pointer;
     border-radius: 15px;
-    margin: 5px;
+    margin: 10px;
     padding: 10px;
     width: 300px;
     text-align: center;
     user-select: none;
     color: white;
+    transition: 0.2s ease;
+}
+
+.button:hover {
+    transform: translateY(-4px);
+    box-shadow: 5px 8px rgb(50, 50, 50);
+}
+
+.button:active {
+    transform: translateY(0px);
+    box-shadow: 5px 5px rgb(50, 50, 50);
 }
 
 .container {
@@ -48,18 +59,18 @@ body {
 }
 
 #step {
-    background-color: rgb(127, 176, 192);
+    background-color: rgb(106, 154, 170);
 }
 
 #reset {
-    background-color: red;
+    background-color: rgb(255, 42, 42);
 }
 
 #result {
     width: 300px;
     border: 5px solid gray;
     padding: 5px;
-    margin: 5px;
+    margin: 10px;
     font-size: 20px;
 }
 

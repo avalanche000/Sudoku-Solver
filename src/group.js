@@ -3,6 +3,7 @@ import { range } from "./utils.js";
 class Group {
     constructor(points) {
         this.points = points;
+        this.points.forEach(point => point.addGroup(this));
     }
 
     getOpen() {

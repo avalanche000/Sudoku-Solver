@@ -1,32 +1,32 @@
-import { range } from "./utils.js";
+import { range, pos9 } from "./utils.js";
 import Point from "./point.js";
 
 class Board {
     constructor() {
-        this.board = range(9).map(y => range(9).map(x => new Point(x, y, 0)));
-        this.points = range(81).map(i => this.get(i % 9, Math.floor(i / 9)));
+        this.points = range(81).map(i => new Point(...pos9.pos(i)));
     }
 
-    resetSolve() {
+    resetAvailable() {
         this.points.forEach(point => {
-            point.availablePoints = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+            point.availableValues = [1, 2, 3, 4, 5, 6, 7, 8, 9];
         });
     }
 
     reset() {
         this.points.forEach(point => {
             point.value = 0;
-            point.availablePoints = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+            point.availableValues = [1, 2, 3, 4, 5, 6, 7, 8, 9];
         });
     }
 
     get(x, y) {
-        return this.board[y][x];
+        return this.points[pos9.i(x, y)];
     }
 
     set(x, y, value, reset = false) {
-        this.board[y][x].value = value;
-        if (reset) this.resetSolve();
+        this.get(x, y).value = value;
+
+        if (reset) this.resetAvailable();
     }
 
     isComplete() {
@@ -37,28 +37,15 @@ class Board {
         return true;
     }
 
-    log() {
-        this.board.forEach((row, y) => {
-            let string = "";
+    toArray() {
+        return this.points.map(point => ({
+            value: point.value,
+            availableValues: [...point.availableValues]
+        }));
+    }
 
-            row.forEach((point, x) => {
-                string += point.value === 0 ? " " : point.value;
-
-                if (x < 8) {
-                    string += " ";
-                }
-
-                if (x === 2 || x === 5) {
-                    string += "| ";
-                }
-            });
-
-            console.log(string);
-
-            if (y === 2 || y === 5) {
-                console.log("------|-------|------");
-            }
-        });
+    toString() {
+        return JSON.stringify(this.toArray());
     }
 }
 

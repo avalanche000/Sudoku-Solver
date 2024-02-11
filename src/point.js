@@ -1,15 +1,20 @@
 import { range, invertValues } from "./utils.js";
 
 class Point {
-    constructor(x, y, value) {
+    constructor(x, y) {
         this.x = x;
         this.y = y;
-        this.value = value;
+        this.value = 0;
         this.availableValues = range(1, 10);
+        this.groups = [];
     }
 
-    getUnavailableValues() {
+    get unavailableValues() {
         return invertValues(thid, this.availableValues);
+    }
+
+    addGroup(group) {
+        this.groups.push(group);
     }
 
     addWrongValues(array) {

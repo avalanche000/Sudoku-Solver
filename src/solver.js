@@ -1,44 +1,60 @@
-import { range, invertValues } from "./utils.js";
+import { range, createPosWrapper, invertValues } from "./utils.js";
 import Group from "./group.js";
+
+const pos3 = createPosWrapper(3);
 
 function parseGroups(board) {
     return [
         ...range(9).map(y => new Group(range(9).map(x => board.get(x, y)))),
         ...range(9).map(x => new Group(range(9).map(y => board.get(x, y)))),
-        ...range(9).map(si => new Group(range(9).map(i => board.get(i % 3 + (si % 3) * 3, Math.floor(i / 3) + Math.floor(si / 3) * 3)))),
+        ...range(9).map(si => new Group(range(9).map(i => board.get(pos3.x(i) + pos3.x(si) * 3, pos3.y(i) + pos3.y(si) * 3))))
     ];
 }
 
 function solve(board, steps) {
     const groups = parseGroups(board);
+    const stepRecordings = [];
 
+    let boardString;
     let iterations = 0;
+
+    function record() {
+        stepRecordings.push(board.toArray());
+    }
+    
+    record();
 
     while (!board.isComplete()) {
         iterations++;
-        if (iterations > 1_000) {
-            console.warn("Too many iterations, breaking the loop.");
-            return 1;
-        }
-        if (iterations > steps) {
-            return 2;
-        }
 
+        if (iterations > steps) return 2;
+        if (iterations > 1_000) return 3;
+
+        board.resetAvailable();
+
+        record();
+
+        // if a value is used in a group, then all other points in that group must not have that value
         groups.forEach(group => {
-            const wrongValues = group.getValues();
+            const usedValues = group.getValues();
 
-            group.getOpen().forEach(point => point.addWrongValues(wrongValues));
+            group.getOpen().forEach(point => point.addWrongValues(usedValues));
         });
 
+        record();
+
+        // if all the available points for a value in one group all also in another group, then all of the other points in the other group must not contain that value
         groups.forEach(group => {
             group.getValuesLeft().forEach(value => {
                 const availablePoints = group.getAvailablePoints(value);
 
                 groups.forEach(otherGroup => {
+                    // not neccessary but it avoids an extra loop
                     if (otherGroup === group) return;
 
                     const otherPoints = otherGroup.points.filter(point => !availablePoints.includes(point));
 
+                    // basically a weird way to check if group2 contains all the available points because I need to set values on all the other points
                     if (otherPoints.length + availablePoints.length === 9) {
                         otherPoints.forEach(point => point.addWrongValues([value]));
                     }
@@ -46,6 +62,9 @@ function solve(board, steps) {
             });
         });
 
+        record();
+
+        // if (x) number of sub-groups take over the same (x) number of squares, and each sub-group is composed of all the same value, then the points within those squares can only have the values that each sub-group is composed of
         groups.forEach(group => {
             const valuesLeft = group.getValuesLeft();
 
@@ -78,6 +97,9 @@ function solve(board, steps) {
             });
         });
 
+        record();
+
+        // if a point is the only point left in a group that can have a certain value, then it must have that value
         groups.forEach(group => {
             group.getValuesLeft().forEach(value => {
                 const availablePoints = group.getAvailablePoints(value);
@@ -88,11 +110,22 @@ function solve(board, steps) {
             });
         });
 
+        record();
+
+        // if a point only has one available value, then it must have that value
         board.points.forEach(point => {
             if (point.availableValues.length === 1) {
                 point.value = point.availableValues[0];
             }
         });
+
+        record();
+
+        const curr = board.toString();
+
+        if (boardString === curr) return 1;
+
+        boardString = curr;
     }
 
     return 0;
