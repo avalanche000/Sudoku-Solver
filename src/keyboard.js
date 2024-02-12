@@ -1,7 +1,9 @@
 class Keyboard {
     static keys = new Map();
-    static downListeners = {};
-    static upListeners = {};
+    static downListeners = [];
+    static upListeners = [];
+    static keyDownListeners = {};
+    static keyUpListeners = {};
 
     static get(key) {
         return !!this.keys.get(key);
@@ -9,25 +11,45 @@ class Keyboard {
 
     static down(key) {
         this.keys.set(key, true);
+
+        this.downListeners.forEach(func => func(key));
+
+        const listeners = this.keyDownListeners[key];
+
+        if (listeners != null) listeners.forEach(func => func());
     }
 
     static up(key) {
         this.keys.set(key, true);
+
+        this.upListeners.forEach(func => func(key));
+
+        const listeners = this.keyUpListeners[key];
+
+        if (listeners != null) listeners.forEach(func => func());
     }
 
-    static onDown(key, func) {
-        if (this.downListeners[key] == null) {
-            this.downListeners[key] = [func];
+    static onDown(func) {
+        this.downListeners.push(func);
+    }
+
+    static onUp(func) {
+        this.upListeners.push(func);
+    }
+
+    static onKeyDown(key, func) {
+        if (this.keyDownListeners[key] == null) {
+            this.keyDownListeners[key] = [func];
         } else {
-            this.downListeners[key].push(func);
+            this.keyDownListeners[key].push(func);
         }
     }
 
-    static onUp(key, func) {
-        if (this.upListeners[key] == null) {
-            this.upListeners[key] = [func];
+    static onKeyUp(key, func) {
+        if (this.keyUpListeners[key] == null) {
+            this.keyUpListeners[key] = [func];
         } else {
-            this.upListeners[key].push(func);
+            this.keyUpListeners[key].push(func);
         }
     }
 }

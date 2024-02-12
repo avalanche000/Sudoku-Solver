@@ -66,7 +66,7 @@ body {
     background-color: rgb(255, 42, 42);
 }
 
-#result {
+#display {
     width: 300px;
     border: 5px solid gray;
     padding: 5px;

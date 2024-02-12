@@ -30,7 +30,7 @@ function solve(board, steps) {
         if (iterations > steps) return 2;
         if (iterations > 1_000) return 3;
 
-        board.resetAvailable();
+        // board.resetAvailable();
 
         record();
 

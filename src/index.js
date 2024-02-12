@@ -64,6 +64,8 @@ loop(9, y => {
             selectedElement = number;
             selectedElement.classList.add("selected");
             selectedPos = [x, y];
+
+            query("#data").innerHTML = JSON.stringify(board.get(x, y).availableValues);
         });
 
         buttons.push(number);
