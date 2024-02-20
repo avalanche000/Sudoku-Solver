@@ -32,6 +32,12 @@ function createPosWrapper(width) {
     };
 }
 
+function wrap(x, min, max) {
+    if (x < min) return min;
+    if (x > max) return max;
+    return x;
+}
+
 const pos9 = createPosWrapper(9);
 
-export { range, loop, invertValues, createPosWrapper, pos9 };
+export { range, loop, invertValues, createPosWrapper, pos9, wrap };

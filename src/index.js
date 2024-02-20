@@ -1,4 +1,4 @@
-import { loop } from "./utils.js";
+import { loop, pos9, wrap } from "./utils.js";
 import { solve } from "./solver.js";
 import Board from "./board.js";
 
@@ -7,9 +7,11 @@ const boardDOM = document.getElementById("board");
 const board = new Board();
 const buttons = [];
 const keys = new Map();
+const directions = { x: new Map(), y: new Map() };
 
 let selectedElement;
-let selectedPos;
+let selectedX;
+let selectedY;
 
 keys.set("Digit1", 1);
 keys.set("Digit2", 2);
@@ -23,12 +25,34 @@ keys.set("Digit9", 9);
 keys.set("Backspace", 0);
 keys.set("Delete", 0);
 
-function attemptSolve(step) {
-    const result = solve(board, step);
+directions.x.set("ArrowLeft", -1);
+directions.x.set("ArrowRight", 1);
+directions.y.set("ArrowUp", -1);
+directions.y.set("ArrowDown", 1);
 
+function updateBoard() {
     board.points.forEach((point, idx) => {
         buttons[idx].innerHTML = point.value === 0 ? "" : point.value;
     });
+
+    query("#data").innerHTML = "";
+
+    selectedElement?.click();
+}
+
+function unselect() {
+    selectedElement?.classList.remove("selected");
+    selectedElement = null;
+    selectedX = null;
+    selectedY = null;
+
+    query("#data").innerHTML = "";
+}
+
+function attemptSolve(step) {
+    const result = solve(board, step);
+
+    updateBoard();
 
     switch (result) {
         case 0:
@@ -63,7 +87,8 @@ loop(9, y => {
             selectedElement?.classList.remove("selected");
             selectedElement = number;
             selectedElement.classList.add("selected");
-            selectedPos = [x, y];
+            selectedX = x;
+            selectedY = y;
 
             query("#data").innerHTML = JSON.stringify(board.get(x, y).availableValues);
         });
@@ -78,54 +103,34 @@ loop(9, y => {
 });
 
 window.addEventListener("keydown", (event) => {
+    if (selectedElement == null) return;
+
     const value = keys.get(event.code);
 
     if (value != null) {
         selectedElement.innerHTML = value === 0 ? "" : value;
-        board.set(...selectedPos, value, true);
+        
+        board.set(selectedX, selectedY, value, true);
     } else {
-        switch (event.code) {
-            case "ArrowUp":
-                event.preventDefault();
+        const deltaX = directions.x.get(event.code) ?? 0;
+        const deltaY = directions.y.get(event.code) ?? 0;
 
-                if (selectedPos[1] > 0) {
-                    selectedPos[1] = selectedPos[1] - 1;
-                    buttons[selectedPos[0] + selectedPos[1] * 9].click();
-                }
-                break;
-            case "ArrowDown":
-                event.preventDefault();
+        if (Math.abs(deltaX) + Math.abs(deltaY) > 0) event.preventDefault();
 
-                if (selectedPos[1] < 8) {
-                    selectedPos[1] = selectedPos[1] + 1;
-                    buttons[selectedPos[0] + selectedPos[1] * 9].click();
-                }
-                break;
-            case "ArrowLeft":
-                event.preventDefault();
+        selectedX = wrap(selectedX + deltaX, 0, 8);
+        selectedY = wrap(selectedY + deltaY, 0, 8);
 
-                if (selectedPos[0] > 0) {
-                    selectedPos[0] = selectedPos[0] - 1;
-                    buttons[selectedPos[0] + selectedPos[1] * 9].click();
-                }
-                break;
-            case "ArrowRight":
-                event.preventDefault();
+        buttons[pos9.i(selectedX, selectedY)].click();
 
-                if (selectedPos[0] < 8) {
-                    selectedPos[0] = selectedPos[0] + 1;
-                    buttons[selectedPos[0] + selectedPos[1] * 9].click();
-                }
-                break;
-            default:
-                break;
-        }
+        updateBoard();
     }
 });
 
 query("#solve").addEventListener("click", () => {
     query("#solve").innerHTML = ". . . . .";
     query("#result").innerHTML = "";
+
+    unselect();
 
     setTimeout(() => {
         attemptSolve();
@@ -136,17 +141,18 @@ query("#solve").addEventListener("click", () => {
 query("#step").addEventListener("click", () => {
     query("#result").innerHTML = "";
 
+    unselect();
+
     setTimeout(() => {
         attemptSolve(true);
     }, 1);
 });
 
 query("#reset").addEventListener("click", () => {
-    board.points.forEach((point, idx) => {
-        query("#result").innerHTML = "";
+    board.reset();
 
-        point.value = 0;
-        point.availableValues = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-        buttons[idx].innerHTML = "";
-    })
+    query("#result").innerHTML = "";
+
+    unselect();
+    updateBoard();
 });
