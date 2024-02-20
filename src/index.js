@@ -23,8 +23,8 @@ keys.set("Digit9", 9);
 keys.set("Backspace", 0);
 keys.set("Delete", 0);
 
-function attemptSolve(steps) {
-    const result = solve(board, steps);
+function attemptSolve(step) {
+    const result = solve(board, step);
 
     board.points.forEach((point, idx) => {
         buttons[idx].innerHTML = point.value === 0 ? "" : point.value;
@@ -137,7 +137,7 @@ query("#step").addEventListener("click", () => {
     query("#result").innerHTML = "";
 
     setTimeout(() => {
-        attemptSolve(1);
+        attemptSolve(true);
     }, 1);
 });
 

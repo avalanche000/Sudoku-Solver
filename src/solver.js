@@ -11,7 +11,7 @@ function parseGroups(board) {
     ];
 }
 
-function solve(board, steps) {
+function solve(board, step) {
     const groups = parseGroups(board);
     const stepRecordings = [];
 
@@ -21,13 +21,13 @@ function solve(board, steps) {
     function record() {
         stepRecordings.push(board.toArray());
     }
-    
+
     record();
 
     while (!board.isComplete()) {
         iterations++;
 
-        if (iterations > steps) return 2;
+        // if (iterations > steps) return 2;
         if (iterations > 1_000) return 3;
 
         // board.resetAvailable();
@@ -106,6 +106,8 @@ function solve(board, steps) {
 
                 if (availablePoints.length === 1) {
                     availablePoints[0].value = value;
+
+                    if (step) return 2;
                 }
             });
         });
@@ -116,6 +118,8 @@ function solve(board, steps) {
         board.points.forEach(point => {
             if (point.availableValues.length === 1) {
                 point.value = point.availableValues[0];
+
+                if (step) return 2;
             }
         });
 
