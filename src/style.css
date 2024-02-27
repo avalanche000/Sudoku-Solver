@@ -33,7 +33,7 @@ body {
 .button:hover {
     transform: translateY(-4px);
     box-shadow: 5px 8px rgb(60, 60, 60);
-    background: linear-gradient(-30deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.1));
+    background: linear-gradient(-30deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1));
 }
 
 .button:active {
@@ -130,7 +130,7 @@ body {
     align-items: center;
     width: calc(100% - var(--board-line-size) - var(--board-line-size));
     height: calc(100% - var(--board-line-size) - var(--board-line-size));
-    border: var(--board-line-size) solid rgb(0, 0, 0);
+    border: var(--board-line-size) solid black
     font-size: 35px;
 }
 
