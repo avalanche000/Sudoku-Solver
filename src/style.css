@@ -130,7 +130,7 @@ body {
     align-items: center;
     width: calc(100% - var(--board-line-size) - var(--board-line-size));
     height: calc(100% - var(--board-line-size) - var(--board-line-size));
-    border: var(--board-line-size) solid black
+    border: var(--board-line-size) solid black;
     font-size: 35px;
 }
 
