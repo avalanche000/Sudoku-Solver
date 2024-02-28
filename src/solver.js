@@ -104,8 +104,11 @@ function solve(board, step) {
             group.getValuesLeft().forEach(value => {
                 const availablePoints = group.getAvailablePoints(value);
 
+                if (availablePoints[0].value !== 0) return;
+
                 if (availablePoints.length === 1) {
                     availablePoints[0].value = value;
+                    availablePoints[0].availableValues = [value];
 
                     if (step) return 2;
                 }
@@ -116,6 +119,8 @@ function solve(board, step) {
 
         // if a point only has one available value, then it must have that value
         board.points.forEach(point => {
+            if (point.value !== 0) return;
+
             if (point.availableValues.length === 1) {
                 point.value = point.availableValues[0];
 
