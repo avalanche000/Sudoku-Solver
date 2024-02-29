@@ -127,15 +127,11 @@ window.addEventListener("keydown", (event) => {
 });
 
 query("#solve").addEventListener("click", () => {
-    query("#solve").innerHTML = ". . . . .";
     query("#result").innerHTML = "";
 
     unselect();
 
-    setTimeout(() => {
-        attemptSolve();
-        query("#solve").innerHTML = "Solve";
-    }, 1);
+    attemptSolve();
 });
 
 query("#step").addEventListener("click", () => {
@@ -143,9 +139,7 @@ query("#step").addEventListener("click", () => {
 
     unselect();
 
-    setTimeout(() => {
-        attemptSolve(true);
-    }, 1);
+    attemptSolve(true);
 });
 
 query("#reset").addEventListener("click", () => {
