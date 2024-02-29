@@ -104,9 +104,9 @@ function solve(board, step) {
             group.getValuesLeft().forEach(value => {
                 const availablePoints = group.getAvailablePoints(value);
 
-                if (availablePoints[0].value !== 0) return;
-
                 if (availablePoints.length === 1) {
+                    if (availablePoints[0].value !== 0) return;
+
                     availablePoints[0].value = value;
                     availablePoints[0].availableValues = [value];
 
