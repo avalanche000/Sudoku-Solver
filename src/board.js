@@ -6,6 +6,28 @@ class Board {
         this.points = range(81).map(i => new Point(...pos9.pos(i)));
     }
 
+    fromArray(boardArray) {
+        this.points.forEach((point, i) => {
+            point.value = boardArray[i].value;
+            point.availableValues = boardArray[i].availableValues;
+        });
+    }
+
+    fromString(boardString) {
+        this.fromArray(JSON.parse(boardString));
+    }
+
+    toArray() {
+        return this.points.map(point => ({
+            value: point.value,
+            availableValues: [...point.availableValues]
+        }));
+    }
+
+    toString() {
+        return JSON.stringify(this.toArray());
+    }
+
     resetAvailable() {
         this.points.forEach(point => {
             point.availableValues = [1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -23,10 +45,8 @@ class Board {
         return this.points[pos9.i(x, y)];
     }
 
-    set(x, y, value, reset = false) {
+    set(x, y, value) {
         this.get(x, y).value = value;
-
-        if (reset) this.resetAvailable();
     }
 
     isComplete() {
@@ -35,17 +55,6 @@ class Board {
         }
 
         return true;
-    }
-
-    toArray() {
-        return this.points.map(point => ({
-            value: point.value,
-            availableValues: [...point.availableValues]
-        }));
-    }
-
-    toString() {
-        return JSON.stringify(this.toArray());
     }
 }
 

@@ -6,29 +6,33 @@ const query = x => document.querySelector(x);
 const boardDOM = document.getElementById("board");
 const board = new Board();
 const buttons = [];
-const keys = new Map();
-const directions = { x: new Map(), y: new Map() };
+const numbers = new Map();
+const directions = new Map();
+const history = [];
 
+let historyIndex = 0;
 let selectedElement;
 let selectedX;
 let selectedY;
 
-keys.set("Digit1", 1);
-keys.set("Digit2", 2);
-keys.set("Digit3", 3);
-keys.set("Digit4", 4);
-keys.set("Digit5", 5);
-keys.set("Digit6", 6);
-keys.set("Digit7", 7);
-keys.set("Digit8", 8);
-keys.set("Digit9", 9);
-keys.set("Backspace", 0);
-keys.set("Delete", 0);
+history.push();
 
-directions.x.set("ArrowLeft", -1);
-directions.x.set("ArrowRight", 1);
-directions.y.set("ArrowUp", -1);
-directions.y.set("ArrowDown", 1);
+numbers.set("Digit1", 1);
+numbers.set("Digit2", 2);
+numbers.set("Digit3", 3);
+numbers.set("Digit4", 4);
+numbers.set("Digit5", 5);
+numbers.set("Digit6", 6);
+numbers.set("Digit7", 7);
+numbers.set("Digit8", 8);
+numbers.set("Digit9", 9);
+numbers.set("Backspace", 0);
+numbers.set("Delete", 0);
+
+directions.set("ArrowLeft", [-1, 0]);
+directions.set("ArrowRight", [1, 0]);
+directions.set("ArrowUp", [0, -1]);
+directions.set("ArrowDown", [0, 1]);
 
 function updateBoard() {
     board.points.forEach((point, idx) => {
@@ -105,20 +109,19 @@ loop(9, y => {
 window.addEventListener("keydown", (event) => {
     if (selectedElement == null) return;
 
-    const value = keys.get(event.code);
+    const value = numbers.get(event.code);
 
     if (value != null) {
         selectedElement.innerHTML = value === 0 ? "" : value;
         
         board.set(selectedX, selectedY, value, true);
     } else {
-        const deltaX = directions.x.get(event.code) ?? 0;
-        const deltaY = directions.y.get(event.code) ?? 0;
+        const movement = directions.get(event.code);
 
-        if (Math.abs(deltaX) + Math.abs(deltaY) > 0) event.preventDefault();
+        if (movement != null) event.preventDefault();
 
-        selectedX = wrap(selectedX + deltaX, 0, 8);
-        selectedY = wrap(selectedY + deltaY, 0, 8);
+        selectedX = wrap(selectedX + movement[0], 0, 8);
+        selectedY = wrap(selectedY + movement[1], 0, 8);
 
         buttons[pos9.i(selectedX, selectedY)].click();
 

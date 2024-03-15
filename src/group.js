@@ -1,4 +1,4 @@
-import { range } from "./utils.js";
+import { invertValues } from "./utils.js";
 
 class Group {
     constructor(points) {
@@ -14,14 +14,12 @@ class Group {
         return this.points.filter(point => point.value !== 0);
     }
 
-    getValues() {
+    getValuesUsed() {
         return this.getClosed().map(point => point.value);
     }
 
     getValuesLeft() {
-        const values = this.getValues();
-
-        return range(9).filter(num => !values.includes(num));
+        return invertValues(this.getValuesUsed());
     }
 
     getAvailablePoints(value) {

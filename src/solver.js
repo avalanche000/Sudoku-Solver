@@ -3,26 +3,18 @@ import Group from "./group.js";
 
 const pos3 = createPosWrapper(3);
 
-function parseGroups(board) {
-    return [
+function solve(board, step) {
+    board.resetAvailable();
+
+    const groups = [
         ...range(9).map(y => new Group(range(9).map(x => board.get(x, y)))),
         ...range(9).map(x => new Group(range(9).map(y => board.get(x, y)))),
         ...range(9).map(si => new Group(range(9).map(i => board.get(pos3.x(i) + pos3.x(si) * 3, pos3.y(i) + pos3.y(si) * 3))))
     ];
-}
-
-function solve(board, step) {
-    const groups = parseGroups(board);
-    const stepRecordings = [];
 
     let boardString;
+    let current;
     let iterations = 0;
-
-    function record() {
-        stepRecordings.push(board.toArray());
-    }
-
-    record();
 
     while (!board.isComplete()) {
         iterations++;
@@ -30,22 +22,16 @@ function solve(board, step) {
         // if (iterations > steps) return 2;
         if (iterations > 1_000) return 3;
 
-        // board.resetAvailable();
-
-        record();
-
-        // if a value is used in a group, then all other points in that group must not have that value
+        // if a value is used in a group, then no other points in that group can have that value
         groups.forEach(group => {
-            const usedValues = group.getValues();
+            const valuesUsed = group.getValuesUsed();
+            const valuesLeft = group.getValuesLeft();
 
-            group.getOpen().forEach(point => point.addWrongValues(usedValues));
-        });
+            group.points.forEach(point => point.addWrongValues(valuesUsed));
 
-        record();
-
-        // if all the available points for a value in one group all also in another group, then all of the other points in the other group must not contain that value
-        groups.forEach(group => {
-            group.getValuesLeft().forEach(value => {
+            // if all the available points for a value in one group are also in another group, then all of the other points in the
+            // other group must not contain that value
+            valuesLeft.forEach(value => {
                 const availablePoints = group.getAvailablePoints(value);
 
                 groups.forEach(otherGroup => {
@@ -54,28 +40,24 @@ function solve(board, step) {
 
                     const otherPoints = otherGroup.points.filter(point => !availablePoints.includes(point));
 
-                    // basically a weird way to check if group2 contains all the available points because I need to set values on all the other points
+                    // basically a weird way to check if group2 contains all the available points because I need to set values on all
+                    // the other points
                     if (otherPoints.length + availablePoints.length === 9) {
                         otherPoints.forEach(point => point.addWrongValues([value]));
                     }
                 });
             });
-        });
 
-        record();
-
-        // if (x) number of sub-groups take over the same (x) number of squares, and each sub-group is composed of all the same value, then the points within those squares can only have the values that each sub-group is composed of
-        groups.forEach(group => {
-            const valuesLeft = group.getValuesLeft();
-
-            valuesLeft.forEach(value1 => {
-                const points = group.getAvailablePoints(value1);
+            // if (x) number of sub-groups take up the same (x) number of squares, and each sub-group is composed of all the same
+            // value, then the points within those squares can only have the values that each sub-group is composed of
+            valuesLeft.forEach(value => {
+                const points = group.getAvailablePoints(value);
 
                 let matches = 1;
-                let values = [value1];
+                let values = [value];
 
                 valuesLeft.forEach(value2 => {
-                    if (value1 === value2) return;
+                    if (value === value2) return;
 
                     const points2 = group.getAvailablePoints(value2);
 
@@ -95,27 +77,16 @@ function solve(board, step) {
                     });
                 }
             });
-        });
 
-        record();
-
-        // if a point is the only point left in a group that can have a certain value, then it must have that value
-        groups.forEach(group => {
-            group.getValuesLeft().forEach(value => {
+            // if a point is the only point left in a group that can have a certain value, then it cannot contain any other values
+            valuesLeft.forEach(value => {
                 const availablePoints = group.getAvailablePoints(value);
 
                 if (availablePoints.length === 1) {
-                    if (availablePoints[0].value !== 0) return;
-
-                    availablePoints[0].value = value;
                     availablePoints[0].availableValues = [value];
-
-                    if (step) return 2;
                 }
             });
         });
-
-        record();
 
         // if a point only has one available value, then it must have that value
         board.points.forEach(point => {
@@ -123,18 +94,14 @@ function solve(board, step) {
 
             if (point.availableValues.length === 1) {
                 point.value = point.availableValues[0];
-
-                if (step) return 2;
             }
         });
 
-        record();
+        current = board.toString();
 
-        const curr = board.toString();
+        if (boardString === current) return 1;
 
-        if (boardString === curr) return 1;
-
-        boardString = curr;
+        boardString = current;
     }
 
     return 0;
