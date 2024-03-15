@@ -3,7 +3,7 @@ import Group from "./group.js";
 
 const pos3 = createPosWrapper(3);
 
-function solve(board, step) {
+function solve(board, doStep) {
     board.resetAvailable();
 
     const groups = [
@@ -89,13 +89,17 @@ function solve(board, step) {
         });
 
         // if a point only has one available value, then it must have that value
-        board.points.forEach(point => {
-            if (point.value !== 0) return;
+        for (let i = 0; i < board.points.length; i++) {
+            const point = board.points[i];
+
+            if (point.value !== 0) continue;
 
             if (point.availableValues.length === 1) {
                 point.value = point.availableValues[0];
+
+                if (doStep) return 2;
             }
-        });
+        }
 
         current = board.toString();
 

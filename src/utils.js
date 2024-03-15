@@ -39,5 +39,6 @@ function wrap(x, min, max) {
 }
 
 const pos9 = createPosWrapper(9);
+const query = x => document.querySelector(x);
 
-export { range, loop, invertValues, createPosWrapper, pos9, wrap };
+export { range, loop, invertValues, createPosWrapper, wrap, pos9, query };

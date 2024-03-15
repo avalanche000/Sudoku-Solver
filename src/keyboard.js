@@ -66,11 +66,11 @@ class Keyboard {
     }
 
     static onKeysDownMapper(map, func) {
-        map.keys().forEach(key => Keyboard.onKeyDown(key, (_, event, firstPress) => func(map.get(key), event, firstPress)));
+        Object.keys(map).forEach(key => Keyboard.onKeyDown(key, (_, event, firstPress) => func(map[key], event, firstPress)));
     }
 
     static onKeysUpMapper(map, func) {
-        map.keys().forEach(key => Keyboard.onKeyUp(key, (_, event, firstPress) => func(map.get(key), event, firstPress)));
+        Object.keys(map).forEach(key => Keyboard.onKeyUp(key, (_, event, firstPress) => func(map[key], event, firstPress)));
     }
 }
 
